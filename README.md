@@ -100,7 +100,7 @@ outdir/
 ## Tutorial
 
 A step-by-step Jupyter notebook is included in
-[`examples/MitoChontrol_tut.ipynb`](examples/MitoChontrol_tut.ipynb),
+[`MitoChontrol_tut.ipynb`](MitoChontrol_tut.ipynb),
 demonstrating both the clustered and single-cluster workflows with
 heuristic overrides and result visualization.
 
