@@ -24,7 +24,7 @@ pip install -e .
 
 ## Quick start
 
-### Clustered pipeline
+### Cluster-aware pipeline
 
 The recommended workflow clusters the data first, then applies
 per-cluster thresholds:
