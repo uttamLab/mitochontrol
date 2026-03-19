@@ -11,10 +11,12 @@ from mitochontrol.models import (
 class TestFitEmpiricalHistogram:
     def test_returns_bin_info(self):
         data = np.random.default_rng(0).normal(5, 1, 200)
-        result = fit_empirical_histogram(data)
-        assert "bin_centers" in result
-        assert "densities" in result
-        assert len(result["bin_centers"]) == len(result["densities"])
+        pdf_empirical, bin_centers, bin_edges = fit_empirical_histogram(data)
+        assert pdf_empirical is not None
+        assert bin_centers is not None
+        assert bin_edges is not None
+        assert len(bin_centers) == len(pdf_empirical)
+        assert len(bin_edges) == len(pdf_empirical) + 1
 
 
 class TestOnlineEmGmm:

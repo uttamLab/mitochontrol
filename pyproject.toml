@@ -38,7 +38,7 @@ dependencies = [
     "matplotlib>=3.5",
     "numpy>=1.22",
     "pandas>=1.4",
-    "python-igraph>=0.10",
+    "python-igraph<0.12",
     "scanpy>=1.9",
     "scikit-learn>=1.1",
     "scipy>=1.8",

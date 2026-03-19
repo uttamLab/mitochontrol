@@ -446,7 +446,7 @@ def online_em_gmm(
     data_flat = data_flat[np.isfinite(data_flat)]
     n = data_flat.size
     if n == 0:
-        raise ValueError("`data` must contain at least one observation.")
+        return None, None, np.inf
     # Set variance floor: use data variance if available, otherwise absolute
     # minimum
     if n > 1:
