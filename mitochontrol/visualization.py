@@ -986,7 +986,7 @@ def plot_threshold_umap(
         color=cat_col,
         palette=palette,
         title=title,
-        frameon=False,
+        frameon=True,
         show=False,
         return_fig=True,
         size=20,

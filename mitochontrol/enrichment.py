@@ -352,7 +352,7 @@ def comparative_enrichment(
             enr = gp.enrichr(
                 gene_list=gene_list,
                 gene_sets=gene_sets_arg,
-                organism="Human",
+                organism="human",
                 outdir=None
             )
             # gseapy can expose .results (list[dict]) or .res2d (DataFrame)
