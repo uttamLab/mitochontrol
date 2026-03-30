@@ -4,20 +4,20 @@
 
 Typical end-to-end workflow:
     1. Run ``clustering()`` on each sample ``AnnData`` object.
-    2. Pass the returned mapping into ``get_thresholds(adatas=...)``.
+    2. Pass the returned mapping into ``mtctrl_with_clustering(adatas=...)``.
     3. Use the returned thresholded ``AnnData`` objects and saved outputs.
 
 Pipeline expectations:
     - ``clustering()`` detects or creates a raw-count layer, creates an
       analyzed layer if needed, assigns ``obs['leiden']``, writes clustered
       outputs, and returns both the clustered ``adata`` and layer names.
-    - ``get_thresholds()`` expects clustered sample-level ``AnnData`` objects
+    - ``mtctrl_with_clustering()`` expects clustered sample-level ``AnnData`` objects
       or the result dictionaries returned by ``clustering()``.
-    - ``get_thresholds()`` requires raw counts and ``obs['leiden']``. It
+    - ``mtctrl_with_clustering()`` requires raw counts and ``obs['leiden']``. It
       creates ``obs['mt_frac']`` if missing and writes boolean threshold
       columns named ``mitochontrol_threshold_out_{prob}``, where ``True``
       means thresholded out and ``False`` means retained.
-    - ``single_cluster_mitochontrol()`` provides the same thresholding logic
+    - ``mtctrl_without_clustering()`` provides the same thresholding logic
       for one already-isolated population and uses the same output layout
       without cluster-specific filename components.
 
@@ -100,8 +100,8 @@ from .enrichment import (
 
 # Pipeline functions
 from .pipelines import (
-    get_thresholds,
-    single_cluster_mitochontrol,
+    mtctrl_with_clustering,
+    mtctrl_without_clustering,
 )
 
 # Clustering pipeline functions
@@ -146,8 +146,8 @@ __all__ = [
     "prep_enrich_df",
     "comparative_enrichment",
     # Pipelines
-    "get_thresholds",
-    "single_cluster_mitochontrol",
+    "mtctrl_with_clustering",
+    "mtctrl_without_clustering",
     # Clustering pipeline
     "clustering",
     "construct_neighbors",

@@ -250,7 +250,7 @@ def _run_cluster_thresholds(
             {
                 "adata_label": label,
                 "cluster_id": "" if cluster_id is None else str(cluster_id),
-                "threshold_probability": prob,
+                "post_prob_compromise": prob,
                 "threshold_value": float(result["threshold"]),
                 "cells_lost": cells_lost,
                 "cells_retained": cells_retained,
@@ -260,7 +260,7 @@ def _run_cluster_thresholds(
     return thresholds, stats_rows
 
 
-def get_thresholds(
+def mtctrl_with_clustering(
     adatas: Mapping[str, Union[AnnData, Mapping[str, Any]]],
     outdir: Optional[PathLike] = None,
     threshold_probs: Optional[Sequence[float]] = None,
@@ -282,7 +282,9 @@ def get_thresholds(
     Returns:
         Mapping from sample label to a result dict containing
         the final ``adata``, per-cluster thresholds, and a
-        ``threshold_stats`` ``DataFrame``.
+        ``threshold_stats`` ``DataFrame`` (columns include
+        ``adata_label``, ``cluster_id``, ``post_prob_compromise``,
+        ``threshold_value``, ``cells_lost``, ``cells_retained``).
 
     Raises:
         ValueError: If ``save=True`` and ``outdir`` is ``None``,
@@ -416,7 +418,7 @@ def get_thresholds(
     return results
 
 
-def single_cluster_mitochontrol(
+def mtctrl_without_clustering(
     adata: AnnData,
     sample_id: str,
     outdir: Optional[PathLike] = None,
@@ -428,7 +430,7 @@ def single_cluster_mitochontrol(
     """Apply naive-Bayes thresholding without per-cluster splitting.
 
     Treats the entire ``adata`` as a single cluster and applies
-    the same probability-based thresholding as ``get_thresholds()``.
+    the same probability-based thresholding as ``mtctrl_with_clustering()``.
     Useful when no Leiden clustering has been performed.
 
     Args:
@@ -446,8 +448,8 @@ def single_cluster_mitochontrol(
 
     Returns:
         ``DataFrame`` of per-threshold statistics (one row per
-        probability) with columns *sample*, *cluster*,
-        *threshold_prob*, *threshold_value*, *cells_lost*, and
+        probability) with columns *adata_label*, *cluster_id*,
+        *post_prob_compromise*, *threshold_value*, *cells_lost*, and
         *cells_retained*.
 
     Raises:
