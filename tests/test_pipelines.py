@@ -22,6 +22,7 @@ class TestGetThresholds:
         r = results["sample"]
         assert "adata" in r
         assert "threshold_stats" in r
+        assert "post_prob_compromise" in r["threshold_stats"].columns
 
         stats_path = tmp_path / "mitochontrol" / "threshold_stats.csv"
         assert stats_path.exists()
@@ -54,6 +55,7 @@ class TestSingleClusterMitochontrol:
         )
         assert isinstance(stats, pd.DataFrame)
         assert len(stats) > 0
+        assert "post_prob_compromise" in stats.columns
 
     def test_save_requires_outdir(self, clustered_adata):
         with pytest.raises(ValueError, match="outdir"):

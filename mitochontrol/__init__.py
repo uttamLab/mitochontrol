@@ -32,7 +32,27 @@ Default output layout:
     - ``{outdir}/mitochontrol/threshold_stats.csv``
 """
 
+from __future__ import annotations
+
+import os
+import sys
+
 __version__ = "0.1.0"
+
+_CITE_URL = "https://github.com/uttamLab/mitochontrol#readme"
+
+
+def _emit_startup_message() -> None:
+    if os.environ.get("MITOCHONTROL_QUIET", "").lower() in ("1", "true", "yes"):
+        return
+    print(
+        f"mitochontrol v{__version__}\n"
+        "If MitoChontrol is useful in your work, please cite it.\n"
+        f"See {_CITE_URL} for citation information.\n",
+        file=sys.stderr,
+        end="",
+    )
+
 
 # Core functions
 from .core import (
@@ -137,3 +157,5 @@ __all__ = [
     "read_marker_genes",
     "assign_celltypes",
 ]
+
+_emit_startup_message()
