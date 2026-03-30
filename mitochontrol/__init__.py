@@ -28,7 +28,9 @@ Default output layout:
     - ``{outdir}/mitochontrol/threshold/{label}_cluster{cluster}_{prob}.pdf``
     - ``{outdir}/mitochontrol/enrichment/{label}_cluster{cluster}_{prob}.pdf``
     - ``{outdir}/mitochontrol/filtered_umap/
-      {label}_cluster{cluster}_{prob}.pdf``
+      {label}_cluster{cluster}_{prob}.pdf`` (``mtctrl_with_clustering`` only)
+    - ``{outdir}/mitochontrol/scatter/{label}_mt_by_umi.png`` and per-threshold
+      ``*_mt_by_umi_thresh_{prob}.png`` (``mtctrl_without_clustering``)
     - ``{outdir}/mitochontrol/threshold_stats.csv``
 """
 

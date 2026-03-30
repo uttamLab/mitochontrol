@@ -51,7 +51,6 @@ class TestMtctrlWithoutClustering:
             outdir=tmp_path,
             show=False,
             save=True,
-            color_by=None,
         )
         assert isinstance(stats, pd.DataFrame)
         assert len(stats) > 0

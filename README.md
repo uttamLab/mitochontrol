@@ -97,6 +97,11 @@ outdir/
     └── threshold_stats.csv
 ```
 
+The single-sample pipeline ``mtctrl_without_clustering`` does not write
+cluster overlays or filtered UMAPs; it saves mt-vs-UMI scatters under
+``mitochontrol/scatter/`` (initial plot plus one threshold-colored file per
+probability).
+
 ## Tutorial
 
 A step-by-step Jupyter notebook is included in

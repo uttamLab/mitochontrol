@@ -19,6 +19,9 @@ from .core import PathLike, _to_path, _ensure_dir, _copy_matrix, _is_count_like
 
 logger = logging.getLogger(__name__)
 
+# Temporary obs column for threshold-colored mt-by-UMI plots
+_THRESH_STATUS_COL = "__mitochontrol_thresh_status"
+
 
 def _extract_adata(
     entry: Union[AnnData, Mapping[str, Any]],
@@ -154,6 +157,20 @@ def _enrichment_plot_path(
         if cluster_id is not None else ""
     )
     return base / f"{label}{suffix}_{_format_prob(prob)}.pdf"
+
+
+def _threshold_mt_by_umi_plot_path(
+    outdir: PathLike,
+    sample_id: str,
+    prob: float,
+) -> Path:
+    """Path for a threshold-colored mt-vs-UMI scatter (PNG base)."""
+    base = _ensure_dir(
+        _to_path(outdir) / "mitochontrol" / "scatter"
+    )
+    return base / (
+        f"{sample_id}_mt_by_umi_thresh_{_format_prob(prob)}.png"
+    )
 
 
 def _filtered_umap_path(
@@ -423,7 +440,6 @@ def mtctrl_without_clustering(
     sample_id: str,
     outdir: Optional[PathLike] = None,
     show: bool = False,
-    color_by: Optional[str] = "mt_frac",
     save: bool = True,
     threshold_probs: Optional[Sequence[float]] = None,
 ) -> pd.DataFrame:
@@ -440,8 +456,6 @@ def mtctrl_without_clustering(
         outdir: Root output directory.  Required when
             ``save=True``.
         show: Display plots interactively.
-        color_by: Column for the mt-by-UMI scatter plot.
-            Set to ``None`` to skip.
         save: Write outputs to disk.
         threshold_probs: Posterior-probability cutoffs.
             Defaults to ``(0.8,)``.
@@ -464,15 +478,12 @@ def mtctrl_without_clustering(
 
     visualization.plot_mt_by_umi(
         adata,
-        color_by=color_by,
+        color_by="mt_frac",
         show=show,
         save=save,
         outdir=outdir,
         sample_id=sample_id,
     )
-
-    if save:
-        _ensure_umap(adata)
 
     _, stats_rows = _run_cluster_thresholds(
         adata,
@@ -512,21 +523,32 @@ def mtctrl_without_clustering(
         )
 
         if save and outdir is not None:
-            _save_filtered_umap(
-                adata,
-                column_name=column_name,
-                save_path=_filtered_umap_path(
-                    outdir,
-                    sample_id,
-                    None,
-                    prob,
-                ),
-                show=show,
-                cluster_obs_names=None,
-                cluster_id=None,
-                prob=prob,
-                sample_id=sample_id,
+            adata.obs[_THRESH_STATUS_COL] = (
+                adata.obs[column_name]
+                .map({True: "thresholded_out", False: "retained"})
+                .astype("category")
             )
+            try:
+                visualization.plot_mt_by_umi(
+                    adata,
+                    color_by=_THRESH_STATUS_COL,
+                    show=show,
+                    save=True,
+                    save_path=_threshold_mt_by_umi_plot_path(
+                        outdir, sample_id, prob
+                    ),
+                    sample_id=sample_id,
+                    title=(
+                        f"{sample_id}: mtRNA vs UMI "
+                        f"(posterior ≥ {_format_prob(prob)})"
+                    ),
+                )
+            finally:
+                adata.obs.drop(
+                    columns=[_THRESH_STATUS_COL],
+                    inplace=True,
+                    errors="ignore",
+                )
 
     if save and outdir is not None:
         adata.write(_adata_path(outdir, sample_id))
