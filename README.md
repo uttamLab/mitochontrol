@@ -31,7 +31,7 @@ per-cluster thresholds:
 
 ```python
 import scanpy as sc
-from mitochontrol import clustering, get_thresholds
+from mitochontrol import clustering, mtctrl_with_clustering
 
 adata = sc.read_h5ad("sample.h5ad")
 
@@ -39,7 +39,7 @@ adata = sc.read_h5ad("sample.h5ad")
 result = clustering(adata, label="Sample1", outdir="output")
 
 # Step 2 — threshold per cluster
-thresholds = get_thresholds(
+thresholds = mtctrl_with_clustering(
     adatas={"Sample1": result},
     outdir="output",
     threshold_probs=(0.8,),
@@ -53,9 +53,9 @@ adata_out = thresholds["Sample1"]["adata"]
 For pre-isolated populations or quick exploration:
 
 ```python
-from mitochontrol import single_cluster_mitochontrol
+from mitochontrol import mtctrl_without_clustering
 
-stats = single_cluster_mitochontrol(
+stats = mtctrl_without_clustering(
     adata,
     sample_id="Sample1",
     outdir="output",

@@ -505,4 +505,4 @@ sc_preprocessing <- function(
 
 # After preprocessing, the intended Python-side handoff is:
 #   clustered[label] = clustering(adata, label=label, outdir=...)
-#   thresholds = get_thresholds(adatas=clustered, outdir=...)
+#   thresholds = mtctrl_with_clustering(adatas=clustered, outdir=...)
