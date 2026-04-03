@@ -1,18 +1,75 @@
-library(reticulate)
-use_python("/Users/strasscm/miniconda3/envs/shared_rpy/bin/python", required = TRUE)
-py_config()
+# Setup: conda env `sc_preprocessing` from sc_preprocessing.yml (override name via
+# SC_PREPROCESSING_CONDA_ENV). Auto-installs missing R deps (rlang>=1.1.3, Bioc
+# DropletUtils/SingleCellExperiment, GitHub DoubletFinder, CRAN scCustomize).
+# If rlang is too old and already loaded, restart R after updating rlang.
+# Reticulate always uses that conda env's Python.
 
-ensure_bioc_package <- function(pkg) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    if (!requireNamespace("BiocManager", quietly = TRUE)) {
-      install.packages("BiocManager", repos = "https://cloud.r-project.org")
+SC_PREPROCESSING_CONDA_ENV <- Sys.getenv(
+  "SC_PREPROCESSING_CONDA_ENV",
+  unset = "sc_preprocessing"
+)
+
+{
+  r <- "https://cloud.r-project.org"
+  inst <- function(p) install.packages(p, repos = r, quiet = TRUE)
+  need <- function(p, min = NULL) {
+    ok <- requireNamespace(p, quietly = TRUE) &&
+      (is.null(min) || packageVersion(p) >= package_version(min))
+    if (ok) {
+      return()
     }
-    BiocManager::install(pkg, ask = FALSE, update = FALSE)
+    if (requireNamespace(p, quietly = TRUE) && isNamespaceLoaded(p)) {
+      stop(
+        "Restart R, update ", p, if (!is.null(min)) paste0(" (>= ", min, ")"),
+        " (e.g. install.packages or conda update r-rlang), re-source.",
+        call. = FALSE
+      )
+    }
+    inst(p)
+  }
+  need("rlang", "1.1.3")
+  for (p in c("DropletUtils", "SingleCellExperiment")) {
+    if (!requireNamespace(p, quietly = TRUE)) {
+      if (!requireNamespace("BiocManager", quietly = TRUE)) {
+        inst("BiocManager")
+      }
+      BiocManager::install(p, ask = FALSE, update = FALSE)
+    }
+  }
+  if (!requireNamespace("DoubletFinder", quietly = TRUE)) {
+    if (!requireNamespace("remotes", quietly = TRUE)) {
+      inst("remotes")
+    }
+    remotes::install_github(
+      "chris-mcginnis-ucsf/DoubletFinder",
+      upgrade = "never"
+    )
+  }
+  if (!requireNamespace("scCustomize", quietly = TRUE)) {
+    inst("scCustomize")
   }
 }
 
-ensure_bioc_package("DropletUtils")
-ensure_bioc_package("SingleCellExperiment")
+library(reticulate)
+tryCatch(
+  use_condaenv(SC_PREPROCESSING_CONDA_ENV, required = TRUE),
+  error = function(e) {
+    stop(
+      "use_condaenv('", SC_PREPROCESSING_CONDA_ENV, "') failed — ",
+      "create env: conda env create -f sc_preprocessing.yml; put conda on PATH.\n",
+      conditionMessage(e),
+      call. = FALSE
+    )
+  }
+)
+if (nzchar(Sys.getenv("CONDA_DEFAULT_ENV", "")) &&
+    Sys.getenv("CONDA_DEFAULT_ENV") != SC_PREPROCESSING_CONDA_ENV) {
+  warning(
+    "Activate ", SC_PREPROCESSING_CONDA_ENV, " before R so R and Python libs match.",
+    call. = FALSE
+  )
+}
+py_config()
 
 library(Matrix)
 library(Seurat)
@@ -37,9 +94,9 @@ library(scCustomize)
 #   - This script uses `scCustomize::as.anndata()` as the base .h5ad export
 #     step, then re-opens the file with reticulate/anndata to attach clearly
 #     named layers for downstream Python use.
-#   - Python setup is intentionally simple: by default the script uses the
-#     currently active conda environment's `python`. You can also pass a full
-#     conda env path (or full path to a Python binary) via `conda_env`.
+#   - Python is always the interpreter from conda env `sc_preprocessing`
+#     (or SC_PREPROCESSING_CONDA_ENV). Per-call overrides still go through
+#     `conda_env` in `sc_preprocessing()` / `write_seurat_h5ad()`.
 #   - `raw_counts` stores the original count matrix after cell filtering.
 #   - `adjusted_counts` stores the post-SoupX matrix used to create the Seurat
 #     object. If SoupX is disabled, this is identical to `raw_counts`.
@@ -53,10 +110,19 @@ resolve_python_binary <- function(conda_env = NULL) {
   active_prefix <- Sys.getenv("CONDA_PREFIX", unset = "")
 
   if (is.null(conda_env) || identical(conda_env, "")) {
+    cfg <- reticulate::py_config()
+    bound <- cfg$python
+    if (nzchar(bound)) {
+      return(bound)
+    }
     if (nzchar(active_python)) {
       return(active_python)
     }
-    stop("No active Python interpreter was found on PATH.")
+    stop(
+      "No Python interpreter is configured. ",
+      "use_condaenv('", SC_PREPROCESSING_CONDA_ENV, "') should run at startup.",
+      call. = FALSE
+    )
   }
 
   if (file.exists(conda_env)) {
@@ -439,4 +505,4 @@ sc_preprocessing <- function(
 
 # After preprocessing, the intended Python-side handoff is:
 #   clustered[label] = clustering(adata, label=label, outdir=...)
-#   thresholds = get_thresholds(adatas=clustered, outdir=...)
+#   thresholds = mtctrl_with_clustering(adatas=clustered, outdir=...)

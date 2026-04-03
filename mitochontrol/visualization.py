@@ -270,9 +270,10 @@ def plot_mt_by_umi(
         if color_by in adata.obs:
             # Color by metadata column (categorical or numeric)
             df[color_by] = adata.obs[color_by]
-            # Convert to categorical if non-numeric or if explicitly 'leiden'
-            if (not pd.api.types.is_numeric_dtype(df[color_by]) or
-                    color_by == 'leiden'):
+            # Convert to categorical if non-numeric, boolean, or if 'leiden'
+            if (pd.api.types.is_bool_dtype(df[color_by]) or
+                    not pd.api.types.is_numeric_dtype(df[color_by]) or
+                    color_by == "leiden"):
                 df[color_by] = df[color_by].astype("category")
             color_label = color_by
 

@@ -38,3 +38,6 @@ adata/
 
 # Archived legacy scripts, notebooks, and configs
 archive/
+
+# Unfinished Preprocessing Scripts
+sc_preprocessing*
