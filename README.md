@@ -11,6 +11,8 @@ filtering.
 ## Installation
 
 ```bash
+conda env create -f mitochontrol.yml
+conda activate mitochontrol
 pip install mitochontrol
 ```
 
