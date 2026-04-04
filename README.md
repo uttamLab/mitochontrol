@@ -10,13 +10,19 @@ filtering.
 
 ## Installation
 
+Create and activate the mitochontrol python environment
 ```bash
 conda env create -f mitochontrol.yml
 conda activate mitochontrol
+```
+
+Install using pip
+
+```bash
 pip install mitochontrol
 ```
 
-Or install from source:
+Or, install from source:
 
 ```bash
 git clone https://github.com/uttamLab/mitochontrol.git
