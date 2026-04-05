@@ -115,7 +115,7 @@ probability).
 A step-by-step Jupyter notebook is included in
 [`MitoChontrol_tut.ipynb`](MitoChontrol_tut.ipynb),
 demonstrating both the clustered and single-cluster workflows with
-heuristic overrides and result visualization.
+heuristic overrides and result visualization. The data used in the notebook can be downloaded from [`https://doi.org/10.5281/zenodo.19423054`](https://doi.org/10.5281/zenodo.19423054)
 
 ## Citation
 
