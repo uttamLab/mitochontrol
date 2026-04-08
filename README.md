@@ -128,7 +128,7 @@ publication:
 BibTeX:
 
 ```bibtex
-@article {Strassburg20260404,
+@article {Strassburg2026,
 	author = {Strassburg, Caitlin and Pitlor, Danielle and Singhi, Aatur D and Gottschalk, Rachel and Uttam, Shikhar},
 	title = {MitoChontrol: Adaptive mitochondrial filtering for robust single-cell RNA sequencing quality control},
 	elocation-id = {2026.04.04.716517},
