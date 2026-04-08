@@ -128,14 +128,18 @@ publication:
 BibTeX:
 
 ```bibtex
-@article{strauss2026mitochontrol,
-  title   = {MitoChontrol: Adaptive mitochondrial filtering for 
-             robust single-cell RNA sequencing quality control},
-  author  = {Strassburg, C. M. and others},
-  journal = {Journal},
-  year    = {2026},
-  doi     = {XXXX}
+@article {Strassburg20260404,
+	author = {Strassburg, Caitlin and Pitlor, Danielle and Singhi, Aatur D and Gottschalk, Rachel and Uttam, Shikhar},
+	title = {MitoChontrol: Adaptive mitochondrial filtering for robust single-cell RNA sequencing quality control},
+	elocation-id = {2026.04.04.716517},
+	year = {2026},
+	doi = {10.64898/2026.04.04.716517},
+	publisher = {Cold Spring Harbor Laboratory},
+	URL = {https://www.biorxiv.org/content/early/2026/04/07/2026.04.04.716517},
+	eprint = {https://www.biorxiv.org/content/early/2026/04/07/2026.04.04.716517.full.pdf},
+	journal = {bioRxiv}
 }
+
 ```
 
 ## License
