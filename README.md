@@ -122,8 +122,8 @@ heuristic overrides and result visualization. The data used in the notebook can 
 If you use MitoChontrol in your research, please cite the associated
 publication:
 
-> Strassburg *et al.* (2026). MitoChontrol: Adaptive mitochondrial filtering for robust single-cell RNA sequencing quality control.
-> *Journal*, **volume**, pages. doi:XXXX
+> Strassburg C, Pitlor D, Singhi AD, Gottschalk R, Uttam S. MitoChontrol: Adaptive mitochondrial filtering for robust single-cell RNA sequencing quality control. bioRxiv. 2026.
+> doi:10.64898/2026.04.04.716517.
 
 BibTeX:
 
