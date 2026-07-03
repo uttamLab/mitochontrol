@@ -183,7 +183,6 @@ def comparative_enrichment(
     cluster_id: Optional[str] = None,
     suptitle: Optional[str] = None,
     threshold_label: str = "MitoChontrol",
-    norm: bool = True,
     exclude_mt_ribo: bool = True,
     min_lfc: float = 2,
     padj: float = 1,
@@ -290,11 +289,6 @@ def comparative_enrichment(
         adata_cluster_de = adata_cluster_de[
             :, ~adata_cluster_de.var_names.isin(genes_to_remove)
         ].copy()
-
-    # Normalize and log transform
-    if norm:
-        sc.pp.normalize_total(adata_cluster_de, target_sum=1e4)
-        sc.pp.log1p(adata_cluster_de)
 
     # Rank genes
     sc.tl.rank_genes_groups(
